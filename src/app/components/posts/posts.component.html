@@ -1,0 +1,94 @@
+<div class="posts-container">
+  <div class="header">
+    <h1>Posts</h1>
+    <div class="user-info">
+      <span>Welcome, {{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="controls">
+      <div class="filter-controls">
+        <button 
+          class="filter-btn" 
+          [class.active]="filterType === 'all'"
+          (click)="filterType = 'all'; onFilterChange()"
+        >
+          All Posts
+        </button>
+        <button 
+          class="filter-btn" 
+          [class.active]="filterType === 'my'"
+          (click)="filterType = 'my'; onFilterChange()"
+        >
+          My Posts
+        </button>
+      </div>
+      
+      <button 
+        class="create-btn" 
+        (click)="showCreateForm = !showCreateForm"
+        *appRole="'user'"
+      >
+        {{ showCreateForm ? 'Cancel' : 'Create Post' }}
+      </button>
+    </div>
+
+    <!-- Create Post Form -->
+    <div class="create-form" *ngIf="showCreateForm">
+      <h3>Create New Post</h3>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input 
+          type="text" 
+          id="title" 
+          [(ngModel)]="newPost.title" 
+          class="form-control"
+          placeholder="Enter post title"
+        >
+      </div>
+      <div class="form-group">
+        <label for="content">Content</label>
+        <textarea 
+          id="content" 
+          [(ngModel)]="newPost.content" 
+          class="form-control"
+          rows="4"
+          placeholder="Enter post content"
+        ></textarea>
+      </div>
+      <button class="submit-btn" (click)="createPost()">Create Post</button>
+    </div>
+
+    <!-- Posts List -->
+    <div class="posts-grid">
+      <div *ngFor="let post of filteredPosts" class="post-card">
+        <div class="post-header">
+          <h3 class="post-title">{{ post.title }}</h3>
+          <div class="post-meta">
+            <span class="author">By {{ getAuthorName(post.authorId) }}</span>
+            <span class="date">{{ post.createdAt | dateFormat }}</span>
+          </div>
+        </div>
+        <div class="post-content">
+          {{ post.content.length > 150 ? (post.content | slice:0:150) + '...' : post.content }}
+        </div>
+        <div class="post-actions">
+          <button class="view-btn" (click)="viewPost(post.id)">View Details</button>
+          <button 
+            class="delete-btn" 
+            (click)="deletePost(post.id)"
+            *ngIf="post.authorId === currentUser?.id"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-posts" *ngIf="filteredPosts.length === 0">
+      <p>No posts found.</p>
+    </div>
+  </div>
+</div> 

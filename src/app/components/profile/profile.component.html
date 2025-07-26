@@ -1,0 +1,174 @@
+<div class="profile-container">
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">
+      ← Back
+    </button>
+    <h1>Profile</h1>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+
+  <div class="content" *ngIf="currentUser">
+    <div class="profile-card">
+      <div class="profile-header">
+        <h2>{{ currentUser.firstName }} {{ currentUser.lastName }}</h2>
+        <span class="role-badge" [class]="currentUser.role">
+          {{ currentUser.role }}
+        </span>
+      </div>
+
+      <div class="profile-content">
+        <form #profileForm="ngForm" (ngSubmit)="saveProfile()" *ngIf="isEditing">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                [(ngModel)]="profileData.firstName"
+                required
+                class="form-control"
+              >
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                [(ngModel)]="profileData.lastName"
+                required
+                class="form-control"
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                [(ngModel)]="profileData.email"
+                required
+                email
+                class="form-control"
+              >
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                [(ngModel)]="profileData.phone"
+                required
+                class="form-control"
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="age">Age</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                [(ngModel)]="profileData.age"
+                required
+                min="1"
+                max="120"
+                class="form-control"
+              >
+            </div>
+            <div class="form-group">
+              <label for="dob">Date of Birth</label>
+              <input
+                type="date"
+                id="dob"
+                name="dob"
+                [(ngModel)]="profileData.dob"
+                required
+                class="form-control"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select
+              id="gender"
+              name="gender"
+              [(ngModel)]="profileData.gender"
+              required
+              class="form-control"
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="cancelEditing()">
+              Cancel
+            </button>
+            <button type="submit" class="save-btn" [disabled]="!profileForm.valid">
+              Save Changes
+            </button>
+          </div>
+        </form>
+
+        <div class="profile-info" *ngIf="!isEditing">
+          <div class="info-grid">
+            <div class="info-item">
+              <label>First Name:</label>
+              <span>{{ currentUser.firstName }}</span>
+            </div>
+            <div class="info-item">
+              <label>Last Name:</label>
+              <span>{{ currentUser.lastName }}</span>
+            </div>
+            <div class="info-item">
+              <label>Email:</label>
+              <span>{{ currentUser.email }}</span>
+            </div>
+            <div class="info-item">
+              <label>Phone:</label>
+              <span>{{ currentUser.phone }}</span>
+            </div>
+            <div class="info-item">
+              <label>Age:</label>
+              <span>{{ currentUser.age }} years old</span>
+            </div>
+            <div class="info-item">
+              <label>Date of Birth:</label>
+              <span>{{ currentUser.dob }}</span>
+            </div>
+            <div class="info-item">
+              <label>Gender:</label>
+              <span class="gender-badge" [class]="currentUser.gender">
+                {{ currentUser.gender }}
+              </span>
+            </div>
+            <div class="info-item">
+              <label>Role:</label>
+              <span class="role-badge" [class]="currentUser.role">
+                {{ currentUser.role }}
+              </span>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <button class="edit-btn" (click)="startEditing()">
+              Edit Profile
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

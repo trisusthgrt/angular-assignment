@@ -1,0 +1,76 @@
+<div class="post-details-container">
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">
+      ← Back to Posts
+    </button>
+    <div class="user-info">
+      <span>Welcome, {{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="post">
+    <div class="post-details-card">
+      <div class="post-header">
+        <h1 class="post-title">{{ post.title }}</h1>
+        <div class="post-meta">
+          <div class="author-info">
+            <span class="author-label">By:</span>
+            <span class="author-name">{{ author?.firstName }} {{ author?.lastName }}</span>
+          </div>
+          <div class="date-info">
+            <span class="date-label">Created:</span>
+            <span class="date">{{ post.createdAt | dateFormat }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-content">
+        <p>{{ post.content }}</p>
+      </div>
+
+      <div class="post-actions" *ngIf="canDelete()">
+        <button class="delete-btn" (click)="deletePost()">
+          Delete Post
+        </button>
+      </div>
+    </div>
+
+    <div class="author-details" *ngIf="author">
+      <h3>About the Author</h3>
+      <div class="author-card">
+        <div class="author-info-grid">
+          <div class="info-item">
+            <label>Name:</label>
+            <span>{{ author.firstName }} {{ author.lastName }}</span>
+          </div>
+          <div class="info-item">
+            <label>Email:</label>
+            <span>{{ author.email }}</span>
+          </div>
+          <div class="info-item">
+            <label>Age:</label>
+            <span>{{ author.age }} years old</span>
+          </div>
+          <div class="info-item">
+            <label>Gender:</label>
+            <span class="gender-badge" [class]="author.gender">
+              {{ author.gender }}
+            </span>
+          </div>
+          <div class="info-item">
+            <label>Role:</label>
+            <span class="role-badge" [class]="author.role">
+              {{ author.role }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="not-found" *ngIf="!post">
+    <h2>Post Not Found</h2>
+    <p>The post you're looking for doesn't exist.</p>
+    <button class="back-btn" (click)="goBack()">Go Back</button>
+  </div>
+</div> 

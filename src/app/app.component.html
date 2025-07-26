@@ -1,0 +1,16 @@
+<div class="app-container">
+  <nav class="navbar" *ngIf="isLoggedIn()">
+    <div class="nav-brand">
+      <h2>Angular Assessment</h2>
+    </div>
+    <div class="nav-menu">
+      <a routerLink="/posts" routerLinkActive="active" class="nav-link">Posts</a>
+      <a routerLink="/users" routerLinkActive="active" class="nav-link" *appRole="'admin'">Users</a>
+      <a routerLink="/profile" routerLinkActive="active" class="nav-link">Profile</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

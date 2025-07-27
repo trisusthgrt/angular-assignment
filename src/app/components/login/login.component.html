@@ -1,62 +1,62 @@
 <div class="login-container">
   <div class="login-card">
-    <div class="login-header">
-      <h1>Welcome Back</h1>
-      <p>Sign in to your account</p>
-    </div>
-
-    <form #loginForm="ngForm" (ngSubmit)="onSubmit()" class="login-form">
+    <h2>Login</h2>
+    
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
       <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          [(ngModel)]="loginData.email"
-          required
-          email
+        <label for="email">Email:</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          [(ngModel)]="loginData.email" 
+          required 
           class="form-control"
-          placeholder="Enter your email"
         >
       </div>
-
+      
       <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          [(ngModel)]="loginData.password"
-          required
+        <label for="password">Password:</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          [(ngModel)]="loginData.password" 
+          required 
           class="form-control"
-          placeholder="Enter your password"
         >
       </div>
-
-      <div class="error-message" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
-
-      <button 
-        type="submit" 
-        class="login-btn"
-        [disabled]="!loginForm.valid || isLoading"
-      >
-        <span *ngIf="!isLoading">Sign In</span>
-        <span *ngIf="isLoading">Signing In...</span>
+      
+      <button type="submit" [disabled]="isLoading || !loginForm.valid" class="login-btn">
+        {{ isLoading ? 'Logging in...' : 'Login' }}
       </button>
     </form>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
 
-    <div class="demo-credentials">
-      <h3>Demo Credentials:</h3>
-      <div class="credential-item">
-        <strong>Admin:</strong> alice.johnson&#64;example.com / admin123
-      </div>
-      <div class="credential-item">
-        <strong>User:</strong> bob.smith&#64;example.com / user123
-      </div>
-      <div class="credential-item">
-        <strong>User:</strong> carol.williams&#64;example.com / user456
+    <!-- Debug Info -->
+    <div class="debug-info">
+      <p><strong>Status:</strong> {{ availableUsers.length > 0 ? 'Users loaded from dummyjson' : 'Loading users...' }}</p>
+      <p><strong>Available users:</strong> {{ availableUsers.length }}</p>
+      <button (click)="reloadUsers()" class="reload-btn">Reload Users</button>
+    </div>
+  </div>
+
+  <!-- Available Users Section -->
+  <div class="available-users">
+    <h3>Available Users (from dummyjson)</h3>
+    <p><strong>Default password for all users:</strong> password123</p>
+    <div *ngIf="availableUsers.length === 0" class="loading-message">
+      Loading users from dummyjson...
+    </div>
+    <div class="users-grid" *ngIf="availableUsers.length > 0">
+      <div *ngFor="let user of availableUsers" class="user-card">
+        <h4>{{ user.firstName }} {{ user.lastName }}</h4>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Role:</strong> {{ user.role }}</p>
+        <p><strong>Password:</strong> password123</p>
       </div>
     </div>
   </div>

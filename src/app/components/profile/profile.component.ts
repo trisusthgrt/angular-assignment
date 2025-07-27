@@ -24,11 +24,8 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Guard ensures user is authenticated, so we can safely get current user
     this.currentUser = this.authService.getCurrentUser();
-    if (!this.currentUser) {
-      this.router.navigate(['/login']);
-      return;
-    }
     this.loadProfileData();
   }
 

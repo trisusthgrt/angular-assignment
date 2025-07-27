@@ -22,24 +22,13 @@ export class UsersComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Guard ensures user is admin, so we can safely get current user
     this.currentUser = this.authService.getCurrentUser();
-    if (!this.currentUser || this.currentUser.role !== 'admin') {
-      this.router.navigate(['/login']);
-      return;
-    }
     this.loadUsers();
   }
 
   loadUsers() {
     this.users = this.authService.getAllUsers();
-  }
-
-  getAdminCount(): number {
-    return this.users.filter(u => u.role === 'admin').length;
-  }
-
-  getUserCount(): number {
-    return this.users.filter(u => u.role === 'user').length;
   }
 
   deleteUser(userId: number) {
@@ -53,5 +42,13 @@ export class UsersComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  getAdminCount(): number {
+    return this.users.filter(u => u.role === 'admin').length;
+  }
+
+  getUserCount(): number {
+    return this.users.filter(u => u.role === 'user').length;
   }
 } 

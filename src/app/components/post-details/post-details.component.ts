@@ -27,12 +27,9 @@ export class PostDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Guard ensures user is authenticated, so we can safely get current user
     this.currentUser = this.authService.getCurrentUser();
-    if (!this.currentUser) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
+    
     const postId = Number(this.route.snapshot.paramMap.get('id'));
     this.post = this.postService.getPostById(postId);
     

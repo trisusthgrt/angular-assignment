@@ -12,12 +12,19 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   private users: User[] = [];
   private usersLoaded = false;
+  private readonly ACCESS_TOKEN_KEY = 'accessToken';
+  private readonly USER_KEY = 'currentUser';
 
   constructor(private http: HttpClient) {
     // Check if user is already logged in from localStorage
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
+    const storedUser = localStorage.getItem(this.USER_KEY);
+    const accessToken = localStorage.getItem(this.ACCESS_TOKEN_KEY);
+    
+    if (storedUser && accessToken) {
       this.currentUserSubject.next(JSON.parse(storedUser));
+    } else {
+      // Clear any partial data if token is missing
+      this.clearStoredData();
     }
     
     // Load users from dummyjson on service initialization
@@ -120,8 +127,7 @@ export class AuthService {
       const user = mockUsers.find(u => u.email === email && u.password === password);
       if (user) {
         console.log('Login successful with mock user:', user);
-        this.currentUserSubject.next(user);
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.setUserSession(user);
         return true;
       }
       console.log('Login failed with mock users');
@@ -133,17 +139,57 @@ export class AuthService {
     const user = this.users.find(u => u.email === email && u.password === password);
     if (user) {
       console.log('Login successful with dummyjson user:', user);
-      this.currentUserSubject.next(user);
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      this.setUserSession(user);
       return true;
     }
     console.log('Login failed with dummyjson users');
     return false;
   }
 
-  logout(): void {
+  private setUserSession(user: User): void {
+    // Generate a simple access token (in real app, this would come from server)
+    const accessToken = this.generateAccessToken(user);
+    
+    // Store user and token
+    this.currentUserSubject.next(user);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
+  }
+
+  private generateAccessToken(user: User): string {
+    // Simple token generation for demo purposes
+    // In a real application, this would be handled by the server
+    const tokenData = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      timestamp: Date.now(),
+      expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 hours from now
+    };
+    return btoa(JSON.stringify(tokenData));
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const tokenData = JSON.parse(atob(token));
+      const currentTime = Date.now();
+      return currentTime > tokenData.expiresAt;
+    } catch (error) {
+      console.error('Error parsing token:', error);
+      return true; // Consider expired if can't parse
+    }
+  }
+
+  private clearStoredData(): void {
+    localStorage.removeItem(this.USER_KEY);
+    localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     this.currentUserSubject.next(null);
-    localStorage.removeItem('currentUser');
+  }
+
+  logout(): void {
+    console.log('Logging out user...');
+    this.clearStoredData();
+    console.log('User logged out successfully');
   }
 
   getCurrentUser(): User | null {
@@ -151,7 +197,24 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.currentUserSubject.value !== null;
+    const user = this.currentUserSubject.value;
+    const accessToken = localStorage.getItem(this.ACCESS_TOKEN_KEY);
+    
+    // Check both user data and access token
+    if (user !== null && accessToken !== null) {
+      // Check if token is expired
+      if (this.isTokenExpired(accessToken)) {
+        console.log('Token is expired, logging out user');
+        this.clearStoredData();
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  getAccessToken(): string | null {
+    return localStorage.getItem(this.ACCESS_TOKEN_KEY);
   }
 
   isAdmin(): boolean {
@@ -189,7 +252,7 @@ export class AuthService {
       // Update current user if it's the same user
       if (this.currentUserSubject.value?.id === user.id) {
         this.currentUserSubject.next(user);
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem(this.USER_KEY, JSON.stringify(user));
       }
       return true;
     }

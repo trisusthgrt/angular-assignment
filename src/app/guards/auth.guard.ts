@@ -13,9 +13,12 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(): boolean {
-    if (this.authService.isLoggedIn()) {
+    // Check if user is logged in and has valid access token
+    if (this.authService.isLoggedIn() && this.authService.getAccessToken()) {
+      console.log('AuthGuard: User is authenticated and has access token');
       return true;
     } else {
+      console.log('AuthGuard: User not authenticated or missing access token, redirecting to login');
       this.router.navigate(['/login']);
       return false;
     }

@@ -7,6 +7,7 @@
       <a routerLink="/posts" routerLinkActive="active" class="nav-link">Posts</a>
       <a routerLink="/users" routerLinkActive="active" class="nav-link" *appRole="'admin'">Users</a>
       <a routerLink="/profile" routerLinkActive="active" class="nav-link">Profile</a>
+      <button (click)="logout()" class="logout-btn">Logout</button>
     </div>
   </nav>
 
